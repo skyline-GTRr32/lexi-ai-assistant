@@ -1,5 +1,3 @@
-// frontend/src/App.js
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
