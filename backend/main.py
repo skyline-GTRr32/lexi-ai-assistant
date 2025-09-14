@@ -40,8 +40,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://lexi-ai-assistant.vercel.app",  # We'll update this
-        "https://*.vercel.app"  # Allows all Vercel subdomains
+        "https://lexi-ai-assistant.vercel.app",  # We'll update this  # Allows all Vercel subdomains
     ],  # The origin of your React app
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
