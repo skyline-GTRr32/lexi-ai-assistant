@@ -1,0 +1,17 @@
+#! backend/requirements.txt
+# FastAPI & Server
+fastapi~=0.111.0
+uvicorn[standard]~=0.29.0
+
+# LlamaIndex - The core RAG and memory framework
+llama-index~=0.10.40
+
+# LlamaIndex Integrations
+llama-index-llms-gemini~=0.1.7
+llama-index-embeddings-gemini~=0.1.5
+
+# LlamaParse for high-quality document parsing (the modern package)
+llama-parse~=0.4.2
+
+# Environment variables for API keys
+python-dotenv~=1.0.1
