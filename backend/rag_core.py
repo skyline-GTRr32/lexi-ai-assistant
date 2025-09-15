@@ -81,7 +81,7 @@ async def create_and_load_indexes(filepath: str, index_dir: str):
     logging.info(f"Vector index created and persisted at: {vector_index_dir}")
 
     summary_index_dir = os.path.join(index_dir, "summary_index")
-    summary_index = SummaryIndex.from_documents(documents, embed_model=Settings.embed_model)
+    summary_index = SummaryIndex.from_documents(documents)
     summary_index.storage_context.persist(persist_dir=summary_index_dir)
     logging.info(f"Summary index created and persisted at: {summary_index_dir}")
 
