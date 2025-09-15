@@ -27,6 +27,10 @@ LLAMAPARSE_API_KEY = os.getenv("LLAMAPARSE_API_KEY")
 if not LLAMAPARSE_API_KEY:
     raise ValueError("LLAMAPARSE_API_KEY is not set in the .env file.")
 
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY is not set in the environment variables.")
+
 try:
     with open("system_prompt.md", "r") as f:
         SYSTEM_PROMPT = f.read().strip()
@@ -37,9 +41,19 @@ except FileNotFoundError:
 
 def configure_global_settings():
     logging.info("Configuring global LlamaIndex settings for Gemini...")
-    Settings.llm = Gemini(model="models/gemini-1.5-flash-latest")
-    Settings.embed_model = GeminiEmbedding(model_name="models/text-embedding-004")
-    logging.info("Global settings configured.")
+    
+    # Explicitly get the API key
+    google_api_key = os.getenv("GOOGLE_API_KEY")
+    if not google_api_key:
+        raise ValueError("GOOGLE_API_KEY is required for Gemini models")
+    
+    try:
+        Settings.llm = Gemini(model="models/gemini-1.5-flash-latest", api_key=google_api_key)
+        Settings.embed_model = GeminiEmbedding(model_name="models/text-embedding-004", api_key=google_api_key)
+        logging.info("Global settings configured successfully with Gemini models.")
+    except Exception as e:
+        logging.error(f"Failed to configure Gemini models: {e}")
+        raise
 
 async def create_and_load_indexes(filepath: str, index_dir: str):
     """Parses document and creates/loads both a Vector and Summary Index."""
@@ -58,12 +72,12 @@ async def create_and_load_indexes(filepath: str, index_dir: str):
     logging.info(f"LlamaParse returned {len(documents)} documents.")
     
     vector_index_dir = os.path.join(index_dir, "vector_index")
-    vector_index = VectorStoreIndex.from_documents(documents)
+    vector_index = VectorStoreIndex.from_documents(documents, embed_model=Settings.embed_model)
     vector_index.storage_context.persist(persist_dir=vector_index_dir)
     logging.info(f"Vector index created and persisted at: {vector_index_dir}")
 
     summary_index_dir = os.path.join(index_dir, "summary_index")
-    summary_index = SummaryIndex.from_documents(documents)
+    summary_index = SummaryIndex.from_documents(documents, embed_model=Settings.embed_model)
     summary_index.storage_context.persist(persist_dir=summary_index_dir)
     logging.info(f"Summary index created and persisted at: {summary_index_dir}")
 
