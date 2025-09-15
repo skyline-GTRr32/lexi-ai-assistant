@@ -57,6 +57,10 @@ def configure_global_settings():
 
 async def create_and_load_indexes(filepath: str, index_dir: str):
     """Parses document and creates/loads both a Vector and Summary Index."""
+    
+    # Ensure global settings are configured in this async context
+    configure_global_settings()
+    
     if not os.path.exists(filepath):
         raise ValueError(f"Filepath does not exist: {filepath}")
         
